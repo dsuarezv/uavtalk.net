@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UavObjectGenerator", "UavObjectGenerator\UavObjectGenerator.csproj", "{D1FFE2DA-2577-4EE2-A44E-9DD100ED673E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UavTalk", "UavTalk\UavTalk.csproj", "{DD1D009B-86CD-4F6D-BC53-47CD707F3659}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +15,10 @@ Global
 		{D1FFE2DA-2577-4EE2-A44E-9DD100ED673E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D1FFE2DA-2577-4EE2-A44E-9DD100ED673E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D1FFE2DA-2577-4EE2-A44E-9DD100ED673E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD1D009B-86CD-4F6D-BC53-47CD707F3659}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD1D009B-86CD-4F6D-BC53-47CD707F3659}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD1D009B-86CD-4F6D-BC53-47CD707F3659}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD1D009B-86CD-4F6D-BC53-47CD707F3659}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = UavObjectGenerator\UavObjectGenerator.csproj

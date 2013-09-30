@@ -35,7 +35,8 @@ namespace UavObjectGenerator
 
 		private static ObjectData GetObjectFromXml(XmlTextReader reader)
 		{
-			ObjectData result = new ObjectData();
+			ObjectData currentObject = null;
+			FieldData currentField = null;
 
 			while (reader.Read())
 			{
@@ -44,24 +45,34 @@ namespace UavObjectGenerator
 					switch (reader.Name)
 					{
 						case "object":
-							result.Name = reader.GetAttribute("name");
+							currentObject = new ObjectData();	
+							currentObject.Name = reader.GetAttribute("name");
 							break;
 						case "description": 
-							result.Description = reader.ReadString();							
+							currentObject.Description = reader.ReadString();							
 							break;
 						case "field":
-							FieldData field = new FieldData();
-							field.Name = reader.GetAttribute("name");
-							field.Type = reader.GetAttribute("type");
-							field.Elements = reader.GetAttribute("elements");
-							field.Units = reader.GetAttribute("units");
-							result.Fields.Add(field);
+							currentField = new FieldData();
+							currentField.Name = reader.GetAttribute("name");
+							currentField.Type = reader.GetAttribute("type");
+							currentField.Elements = reader.GetAttribute("elements");
+							currentField.Units = reader.GetAttribute("units");
+							currentField.ParseElementNamesFromAttribute(reader.GetAttribute("elementnames"));
+							currentField.ParseOptionsFromAttribute(reader.GetAttribute("options"));
+							currentField.ParseDefaultValuesFromAttribute(reader.GetAttribute("defaultvalue"));
+							currentObject.Fields.Add(currentField);
+							break;
+						case "option": 
+							currentField.Options.Add(reader.ReadString());
+							break;
+						case "elementname": 
+							currentField.ElementNames.Add(reader.ReadString());
 							break;
 					}
 				}
 			}
 
-			return result;
+			return currentObject;
 		}
 
 

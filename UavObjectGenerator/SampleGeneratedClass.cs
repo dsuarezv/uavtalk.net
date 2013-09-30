@@ -23,9 +23,7 @@ namespace UavObjectGenerator
 	</xml>
 
 
-	 */
-
-
+	*/
 
 
 	/*
@@ -35,11 +33,6 @@ namespace UavObjectGenerator
 
 	public class Accels: UavDataObject
 	{
-		private float mX;
-		private float mY;
-		private float mZ;
-		private float mTemperature;
-
 
 		public float X {
 			get { return mX; }
@@ -60,7 +53,6 @@ namespace UavObjectGenerator
 			get { return mTemperature; }
 			set	{ mTemperature = value; NotifyUpdated(); }
 		}
-
 
 
 		public Accels()
@@ -86,6 +78,12 @@ namespace UavObjectGenerator
 			stream.Write(mZ);
 			stream.Write(mTemperature);
 		}
+
+
+		private float mX;
+		private float mY;
+		private float mZ;
+		private float mTemperature;
 	}
 }
 

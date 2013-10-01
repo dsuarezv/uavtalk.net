@@ -187,11 +187,50 @@ namespace UavObjectGenerator
             else
             {
                 return string.Format(" = new {0}[{1}] {{ {2} }};",
-                    GetCSharpType(obj, f), numElements, GetCommaSeparatedValues(f.DefaultValues));
+                    GetCSharpType(obj, f), numElements, GetDefaultValuesList(obj, f));
             }
 
-
             return "";
+        }
+
+        private static string GetDefaultValuesList(ObjectData obj, FieldData f)
+        {
+            if (f.DefaultValues.Count == f.ElementNames.Count)
+            {
+                if (f.Type == "enum")
+                    return GetEnumCommaSeparatedValues(GetEnumName(obj, f), f.DefaultValues);
+                else
+                    return GetCommaSeparatedValues(f.DefaultValues);
+            }
+
+            if (f.DefaultValues.Count == 1)
+            {
+                List<string> expandedDefaults = new List<string>();
+
+                string enumName = f.Type == "enum" ? GetEnumName(obj, f) : "";
+
+                // Create a list epanding the same value to the given number of items
+                for (int i = 0; i < GetNumberOfElements(f); ++i)
+                {
+                    expandedDefaults.Add(string.Format("{0}.{1}", enumName, f.DefaultValues[0]));
+                }
+
+                return GetCommaSeparatedValues(expandedDefaults);
+            }
+
+            return "DEFAULT_VALUES_DONT_MATCH_ELEMENT_NAMES";
+        }
+
+        private static string GetEnumCommaSeparatedValues(string enumName, List<string> list)
+        {
+            List<string> result = new List<string>();
+
+            for (int i = 0; i < list.Count; ++i)
+            {
+                result.Add(string.Format("{0}.{1}", enumName, list[i]));
+            }
+
+            return GetCommaSeparatedValues(result);
         }
 
         private static int GetNumberOfElements(FieldData f)

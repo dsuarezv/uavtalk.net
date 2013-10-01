@@ -14,7 +14,6 @@ namespace UavObjectGenerator
         public const string Namespace = "UavTalk";
 
 
-
         public static void Write(TextWriter w, ObjectData obj)
         {
             WriteHeader(w, obj);
@@ -31,10 +30,12 @@ namespace UavObjectGenerator
 
         // __ Impl _______________________________________________________
 
+
         private static void WL(TextWriter w)
         {
             w.WriteLine();
         }
+
 
         private static void WL(TextWriter w, string s, params object[] args)
         {
@@ -43,6 +44,7 @@ namespace UavObjectGenerator
             else
                 w.WriteLine(string.Format(s, args));
         }
+
 
         private static void WriteHeader(TextWriter w, ObjectData obj)
         {
@@ -55,11 +57,13 @@ namespace UavObjectGenerator
             WL(w);
         }
 
+
         private static void WriteClassHeader(TextWriter w, ObjectData obj)
         {
             WL(w, "    public class {0}: UavDataObject", obj.Name);
             WL(w, "    {");
         }
+
 
         private static void WriteProperties(TextWriter w, ObjectData obj)
         {
@@ -200,7 +204,7 @@ namespace UavObjectGenerator
                 if (f.Type == "enum")
                     return GetEnumCommaSeparatedValues(GetEnumName(obj, f), f.DefaultValues);
                 else
-                    return GetCommaSeparatedValues(f.DefaultValues);
+                    return GetCommaSeparatedValues(f.DefaultValues, GetFieldTypeSuffix(f));
             }
 
             if (f.DefaultValues.Count == 1)
@@ -215,10 +219,21 @@ namespace UavObjectGenerator
                     expandedDefaults.Add(string.Format("{0}.{1}", enumName, f.DefaultValues[0]));
                 }
 
-                return GetCommaSeparatedValues(expandedDefaults);
+                return GetCommaSeparatedValues(expandedDefaults, GetFieldTypeSuffix(f));
             }
 
             return "DEFAULT_VALUES_DONT_MATCH_ELEMENT_NAMES";
+        }
+
+        private static string GetFieldTypeSuffix(FieldData f)
+        {
+            switch (f.Type)
+            {
+                case "float":
+                    return "f";
+                default:
+                    return "";
+            }
         }
 
         private static string GetEnumCommaSeparatedValues(string enumName, List<string> list)
@@ -230,7 +245,7 @@ namespace UavObjectGenerator
                 result.Add(string.Format("{0}.{1}", enumName, list[i]));
             }
 
-            return GetCommaSeparatedValues(result);
+            return GetCommaSeparatedValues(result, "");
         }
 
         private static int GetNumberOfElements(FieldData f)
@@ -314,10 +329,10 @@ namespace UavObjectGenerator
         {
             if (f.Type != "enum") return "";
 
-            return GetCommaSeparatedValues(f.Options);
+            return GetCommaSeparatedValues(f.Options, "");
         }
 
-        private static string GetCommaSeparatedValues(List<string> list)
+        private static string GetCommaSeparatedValues(List<string> list, string suffix)
         {
             StringBuilder result = new StringBuilder();
             bool isFirst = true;
@@ -329,7 +344,7 @@ namespace UavObjectGenerator
                 else
                     result.Append(", ");
 
-                result.Append(s);
+                result.Append(s + suffix);
             }
 
             return result.ToString();

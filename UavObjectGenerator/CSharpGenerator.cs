@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Text;
+using System.Collections.Generic;
 
 namespace UavObjectGenerator
 {
@@ -30,42 +31,45 @@ namespace UavObjectGenerator
 
         // __ Impl _______________________________________________________
 
+        private static void WL(TextWriter w)
+        {
+            w.WriteLine();
+        }
+
+        private static void WL(TextWriter w, string s, params object[] args)
+        {
+            if (args.Length == 0)
+                w.WriteLine(s);
+            else
+                w.WriteLine(string.Format(s, args));
+        }
 
         private static void WriteHeader(TextWriter w, ObjectData obj)
         {
-            w.Write(string.Format(@"
-using System;
-using System.IO;
-using UavTalk;
-
-namespace {0}
-{{
-
-",
-                Namespace));
+            WL(w, "using System;");
+            WL(w, "using System.IO;");
+            WL(w, "using UavTalk;");
+            WL(w);
+            WL(w, "namespace {0}", Namespace);
+            WL(w, "{");
+            WL(w);
         }
 
         private static void WriteClassHeader(TextWriter w, ObjectData obj)
         {
-            w.Write(string.Format(@"
-    public class {0}: UavDataObject
-    {{
-
-", 
-                obj.Name));
+            WL(w, "    public class {0}: UavDataObject", obj.Name);
+            WL(w, "    {");
         }
 
         private static void WriteProperties(TextWriter w, ObjectData obj)
         {
             foreach (FieldData f in obj.Fields)
             {
-                w.Write(string.Format(@"
-        public {2}{3} {0} {{
-            get {{ return {1}; }}
-            set {{ {1} = value; NotifyUpdated(); }}
-        }}
-",
-                    f.Name, GetPrivateFieldName(f), GetCSharpType(obj, f), GetArrayModifier(f, false)));
+                WL(w, "        public {0}{1} {2} {{", GetCSharpType(obj, f), GetArrayModifier(f, false), f.Name);
+                WL(w, "            get {{ return {0}; }}", GetPrivateFieldName(f));
+                WL(w, "            set {{ {0} = value; NotifyUpdated(); }}", GetPrivateFieldName(f));
+                WL(w, "        }");
+                WL(w);
             }
         }
 
@@ -76,8 +80,8 @@ namespace {0}
             {
                 if (f.Type != "enum") continue;
 
-                w.WriteLine(string.Format("    public enum {0} {{ {1} }};\n", 
-                    GetEnumName(obj, f), GetEnumItems(f)));
+                WL(w, "    public enum {0} {{ {1} }};", GetEnumName(obj, f), GetEnumItems(f));
+                WL(w);
             }
         }
 
@@ -90,61 +94,105 @@ namespace {0}
 
         private static void WriteSerialize(TextWriter w, ObjectData obj)
         {
-            w.Write(@"
-        public override void Serialize(BinaryWriter stream)
-        {
-");
+            WL(w, "        public override void Serialize(BinaryWriter s)");
+            WL(w, "        {");
+
             foreach (FieldData f in obj.Fields)
             {
-                w.WriteLine(string.Format("            stream.Write({0}{1});", 
-                    GetSerializeTypeCast(obj, f), GetPrivateFieldName(f)));
+                int numElements = GetNumberOfElements(f);
+
+                if (numElements <= 1)
+                {
+                    WL(w, "            s.Write({0}{1});", GetSerializeTypeCast(obj, f), GetPrivateFieldName(f));
+                }
+                else
+                {
+                    for (int i = 0; i < numElements; ++i)
+                    {
+                        WL(w, "            s.Write({0}{1}[{2}]);  // {3}", 
+                           GetSerializeTypeCast(obj, f), GetPrivateFieldName(f), i, GetElementNameAt(f, i));
+                    }
+                }
+
             }
 
-            w.WriteLine("        }\n");
+            WL(w, "        }\n");
+            WL(w);
         }
 
         private static void WriteDeserialize(TextWriter w, ObjectData obj)
         {
-            w.Write(@"
-        public override UavDataObject Deserialize(BinaryReader stream)
-        {
-");
-            w.WriteLine(string.Format(@"            {0} result = new {0}();", obj.Name));
+            WL(w,"        public override UavDataObject Deserialize(BinaryReader stream)");
+            WL(w,"        {");
+            WL(w, "            {0} result = new {0}();", obj.Name);
 
             foreach (FieldData f in obj.Fields)
             {
-                w.WriteLine(string.Format("            {0} = {1}stream.{2}();", 
-                        GetPrivateFieldName(f), GetEnumTypeCast(obj, f), GetReadOperation(f)));
+                int numElements = GetNumberOfElements(f);
+
+                if (numElements <= 1)
+                {
+                    WL(w, "            result.{0} = {1}stream.{2}();", 
+                       GetPrivateFieldName(f), GetEnumTypeCast(obj, f), GetReadOperation(f));
+                }
+                else
+                {
+                    for (int i = 0; i < numElements; ++i)
+                    {
+                        WL(w, "            result.{0}[{1}] = {2}stream.{3}();  // {4}", 
+                           GetPrivateFieldName(f), i, GetEnumTypeCast(obj, f), GetReadOperation(f), GetElementNameAt(f, i));
+                    }
+                }
             }
 
-            w.WriteLine("            return result;");
-            w.WriteLine("        }\n");
+            WL(w, "            return result;");
+            WL(w, "        }\n");
+            WL(w);
         }
 
         private static void WritePrivateFields(TextWriter w, ObjectData obj)
         {
             foreach (FieldData f in obj.Fields)
             {
-                w.WriteLine(string.Format(@"        private {0}{1} {2}{3};", 
-                    GetCSharpType(obj, f), GetArrayModifier(f, false), GetPrivateFieldName(f), GetDefaultValue(f)));
+                WL(w, "        private {0}{1} {2}{3};", 
+                   GetCSharpType(obj, f), GetArrayModifier(f, false), 
+                   GetPrivateFieldName(f), GetDefaultValue(obj, f));
             }
         }
 
         private static void WriteFooter(TextWriter w, ObjectData obj)
         {
-            w.Write(@"
-    }
-}
-");
+            WL(w, "    }");
+            WL(w, "}");
+        }
+
+        private static string GetElementNameAt(FieldData f, int index)
+        {
+            if (index < f.ElementNames.Count) return f.ElementNames[index];
+
+            return "NO_ELEMENT_NAME";
         }
 
 
-        private static string GetDefaultValue(FieldData f)
+        private static string GetDefaultValue(ObjectData obj, FieldData f)
         {   
             // = new UInt16[3]  // Roll, Pitch, Yaw
+            int numElements = GetNumberOfElements(f);
+
+            if (numElements <= 1)
+            {
+                if (f.DefaultValues.Count == 1) 
+                    return string.Format("= {0}", f.DefaultValues[0]);
+            }
+            else
+            {
+                return string.Format(" = new {0}[{1}] {{ {2} }};",
+                    GetCSharpType(obj, f), numElements, GetCommaSeparatedValues(f.DefaultValues));
+            }
+
+
             return "";
         }
-
 
         private static int GetNumberOfElements(FieldData f)
         {
@@ -162,7 +210,7 @@ namespace {0}
         {
             int numElements = GetNumberOfElements(f);
 
-            if (numElements == 0) return "";
+            if (numElements <= 1) return "";
 
             return string.Format("[{0}]", (withNumberOfElements ? numElements.ToString() : ""));
         }
@@ -214,7 +262,7 @@ namespace {0}
                 case "enum":   return "ReadByte";
                 default:
                     Console.WriteLine("ERROR: Unknown uavType: " + f.Type);
-                    return "!!!!";
+                    return "UNKNOWN_UAV_TYPE";
             }
         }
 
@@ -227,10 +275,15 @@ namespace {0}
         {
             if (f.Type != "enum") return "";
 
+            return GetCommaSeparatedValues(f.Options);
+        }
+
+        private static string GetCommaSeparatedValues(List<string> list)
+        {
             StringBuilder result = new StringBuilder();
             bool isFirst = true;
 
-            foreach (String s in f.Options)
+            foreach (String s in list)
             {
                 if (isFirst)
                     isFirst = false;

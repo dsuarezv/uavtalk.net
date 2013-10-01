@@ -8,76 +8,76 @@ namespace UavObjectGenerator
     {
         public XmlParser(string fileName)
         {
-			mSourceFileName = fileName;
+            mSourceFileName = fileName;
         }
 
-		public void Generate(string targetFileName)
-		{
-			using (XmlTextReader reader = new XmlTextReader(mSourceFileName))
-			{
-				using (StreamWriter writer = new StreamWriter(targetFileName))
-				{
-					Generate(reader, writer);
-				}
-			}
-		}
+        public void Generate(string targetFileName)
+        {
+            using (XmlTextReader reader = new XmlTextReader(mSourceFileName))
+            {
+                using (StreamWriter writer = new StreamWriter(targetFileName))
+                {
+                    Generate(reader, writer);
+                }
+            }
+        }
 
-		public static void Generate(XmlTextReader reader, StreamWriter writer)
-		{
-			ObjectData data = GetObjectFromXml(reader);
+        public static void Generate(XmlTextReader reader, TextWriter writer)
+        {
+            ObjectData data = GetObjectFromXml(reader);
 
-			CSharpGenerator.Write(writer, data);
-		}
-
-
-		// __ Impl _______________________________________________________
+            CSharpGenerator.Write(writer, data);
+        }
 
 
-		private static ObjectData GetObjectFromXml(XmlTextReader reader)
-		{
-			ObjectData currentObject = null;
-			FieldData currentField = null;
-
-			while (reader.Read())
-			{
-				if (reader.IsStartElement())
-				{
-					switch (reader.Name)
-					{
-						case "object":
-							currentObject = new ObjectData();	
-							currentObject.Name = reader.GetAttribute("name");
-							break;
-						case "description": 
-							currentObject.Description = reader.ReadString();							
-							break;
-						case "field":
-							currentField = new FieldData();
-							currentField.Name = reader.GetAttribute("name");
-							currentField.Type = reader.GetAttribute("type");
-							currentField.Elements = reader.GetAttribute("elements");
-							currentField.Units = reader.GetAttribute("units");
-							currentField.ParseElementNamesFromAttribute(reader.GetAttribute("elementnames"));
-							currentField.ParseOptionsFromAttribute(reader.GetAttribute("options"));
-							currentField.ParseDefaultValuesFromAttribute(reader.GetAttribute("defaultvalue"));
-							currentObject.Fields.Add(currentField);
-							break;
-						case "option": 
-							currentField.Options.Add(reader.ReadString());
-							break;
-						case "elementname": 
-							currentField.ElementNames.Add(reader.ReadString());
-							break;
-					}
-				}
-			}
-
-			return currentObject;
-		}
+        // __ Impl _______________________________________________________
 
 
+        private static ObjectData GetObjectFromXml(XmlTextReader reader)
+        {
+            ObjectData currentObject = null;
+            FieldData currentField = null;
 
-		private string mSourceFileName;
+            while (reader.Read())
+            {
+                if (reader.IsStartElement())
+                {
+                    switch (reader.Name)
+                    {
+                        case "object":
+                            currentObject = new ObjectData();    
+                            currentObject.Name = reader.GetAttribute("name");
+                            break;
+                        case "description": 
+                            currentObject.Description = reader.ReadString();                            
+                            break;
+                        case "field":
+                            currentField = new FieldData();
+                            currentField.Name = reader.GetAttribute("name");
+                            currentField.Type = reader.GetAttribute("type");
+                            currentField.Elements = reader.GetAttribute("elements");
+                            currentField.Units = reader.GetAttribute("units");
+                            currentField.ParseElementNamesFromAttribute(reader.GetAttribute("elementnames"));
+                            currentField.ParseOptionsFromAttribute(reader.GetAttribute("options"));
+                            currentField.ParseDefaultValuesFromAttribute(reader.GetAttribute("defaultvalue"));
+                            currentObject.Fields.Add(currentField);
+                            break;
+                        case "option": 
+                            currentField.Options.Add(reader.ReadString());
+                            break;
+                        case "elementname": 
+                            currentField.ElementNames.Add(reader.ReadString());
+                            break;
+                    }
+                }
+            }
+
+            return currentObject;
+        }
+
+
+
+        private string mSourceFileName;
     }
 }
 

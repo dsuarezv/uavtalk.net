@@ -13,9 +13,10 @@ namespace UavGen
             //XmlParser p = new XmlParser("/Users/dave/develop/Taulabs-dyquo/xmls/brushlessgimbalsettings.xml");
             //p.Generate("/Users/dave/develop/Taulabs-dyquo/output/accels.cs");
 
-            XmlParser.Generate(
-                new XmlTextReader("/Users/dave/develop/Taulabs-dyquo/xmls/adcrouting.xml"),
-                Console.Out);
+            //XmlParser.Generate(new XmlTextReader("/Users/dave/develop/Taulabs-dyquo/xmls/adcrouting.xml"), Console.Out);
+            //XmlParser.Generate(new XmlTextReader("/Users/dave/develop/Taulabs-dyquo/xmls/accels.xml"), Console.Out);
+            XmlParser.Generate(new XmlTextReader("/Users/dave/develop/Taulabs-dyquo/xmls/fixedwingpathfollowersettingscc.xml"), Console.Out);
+
         }
     }
 }

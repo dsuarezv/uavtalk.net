@@ -186,8 +186,17 @@ namespace UavObjectGenerator
 
             if (numElements <= 1)
             {
-                if (f.DefaultValues.Count == 1) 
-                    return string.Format(" = {0}", f.DefaultValues[0] + GetFieldTypeSuffix(f));
+                if (f.DefaultValues.Count == 1)
+                {
+                    if (f.Type == "enum")
+                    {
+                        return string.Format(" = {0}.{1}", GetEnumName(obj, f), f.DefaultValues[0]);
+                    }
+                    else
+                    {
+                        return string.Format(" = {0}", f.DefaultValues[0] + GetFieldTypeSuffix(f));
+                    }
+                }
             }
             else
             {

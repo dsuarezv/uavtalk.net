@@ -237,7 +237,7 @@ namespace UavObjectGenerator
                     // Special case: array of uint8 as chars
                     for (int i = 0; i < numElements; ++i)
                     {
-                        expandedDefaults.Add(valueToExpand[i].ToString());
+                        expandedDefaults.Add(string.Format("0x{0:x2}", (int)valueToExpand[i]));
                     }
                 }
                 else

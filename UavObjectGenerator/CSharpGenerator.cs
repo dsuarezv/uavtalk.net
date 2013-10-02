@@ -191,21 +191,28 @@ namespace UavObjectGenerator
             }
             else
             {
-                return string.Format(" = new {0}[{1}] {{ {2} }}",
+                return string.Format(" = new {0}[{1}] {2}",
                     GetCSharpType(obj, f), numElements, GetDefaultValuesList(obj, f));
             }
 
             return "";
         }
 
+        private static string GetBracketedString(string s)
+        {
+            return string.Format("{{ {0} }}", s);
+        }
+
         private static string GetDefaultValuesList(ObjectData obj, FieldData f)
         {
+            if (f.DefaultValues.Count == 0) return "";
+
             if (f.DefaultValues.Count == f.ElementNames.Count)
             {
                 if (f.Type == "enum")
-                    return GetEnumCommaSeparatedValues(GetEnumName(obj, f), f.DefaultValues);
+                    return GetBracketedString(GetEnumCommaSeparatedValues(GetEnumName(obj, f), f.DefaultValues));
                 else
-                    return GetCommaSeparatedValues(f.DefaultValues, GetFieldTypeSuffix(f));
+                    return GetBracketedString(GetCommaSeparatedValues(f.DefaultValues, GetFieldTypeSuffix(f)));
             }
 
             if (f.DefaultValues.Count == 1)
@@ -233,7 +240,7 @@ namespace UavObjectGenerator
                     }
                 }
 
-                return GetCommaSeparatedValues(expandedDefaults, GetFieldTypeSuffix(f));
+                return GetBracketedString(GetCommaSeparatedValues(expandedDefaults, GetFieldTypeSuffix(f)));
             }
 
             return "";

@@ -304,7 +304,7 @@ namespace UavObjectGenerator
             switch (f.Type)
             {
                 case "float": return "float";
-                case "int8": 
+                case "int8": return "SByte";
                 case "uint8": return "byte";
                 case "int16": return "Int16";
                 case "uint16": return "UInt16";
@@ -338,7 +338,7 @@ namespace UavObjectGenerator
             switch (f.Type)
             {
                 case "float":  return "ReadSingle";
-                case "int8":   return "ReadByte";
+                case "int8":   return "ReadSByte";
                 case "uint8":  return "ReadByte";
                 case "int16":  return "ReadInt16";
                 case "uint16": return "ReadUInt16";

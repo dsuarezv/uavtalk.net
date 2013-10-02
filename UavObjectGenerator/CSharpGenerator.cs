@@ -213,11 +213,24 @@ namespace UavObjectGenerator
                 List<string> expandedDefaults = new List<string>();
 
                 string enumName = f.Type == "enum" ? GetEnumName(obj, f) + '.' : "";
+                string valueToExpand = f.DefaultValues[0];
+                int numElements = GetNumberOfElements(f);
 
-                // Create a list expanding the same value to the given number of items
-                for (int i = 0; i < GetNumberOfElements(f); ++i)
+                if (f.Type == "uint8" && numElements == valueToExpand.Length)
                 {
-                    expandedDefaults.Add(string.Format("{0}{1}", enumName, f.DefaultValues[0]));
+                    // Special case: array of uint8 as chars
+                    for (int i = 0; i < numElements; ++i)
+                    {
+                        expandedDefaults.Add(valueToExpand[i].ToString());
+                    }
+                }
+                else
+                {
+                    // Create a list expanding the same value to the given number of items
+                    for (int i = 0; i < numElements; ++i)
+                    {
+                        expandedDefaults.Add(string.Format("{0}{1}", enumName, valueToExpand));
+                    }
                 }
 
                 return GetCommaSeparatedValues(expandedDefaults, GetFieldTypeSuffix(f));

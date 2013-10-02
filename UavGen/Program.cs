@@ -27,9 +27,9 @@ namespace UavGen
             {
                 try
                 {
-                    //string fileName = Path.GetFileNameWithoutExtension(s);
-                    //new XmlParser(s).Generate(fileName + ".cs");
-                    XmlParser.Generate(new XmlTextReader(s), Console.Out);
+                    string fileName = Path.GetFileNameWithoutExtension(s);
+                    new XmlParser(s).Generate(fileName + ".cs");
+                    //XmlParser.Generate(new XmlTextReader(s), Console.Out);
                 }
                 catch (Exception ex)
                 {

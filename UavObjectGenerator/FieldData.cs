@@ -5,6 +5,7 @@ namespace UavObjectGenerator
 {
     public class FieldData
     {   
+        // Anything added here should be added as well in the CloneFrom method
         public string Name { get; set; }
         public string Type { get; set; }
         public string Units { get; set; }
@@ -44,6 +45,15 @@ namespace UavObjectGenerator
             }
         }
 
+        public void CloneFrom(FieldData f)
+        {
+            this.Type = f.Type;
+            this.Units = f.Units;
+            this.Elements = f.Elements;
+            this.ElementNames = f.ElementNames;
+            this.Options = f.Options;
+            this.DefaultValues = f.DefaultValues;
+        }
 
         private void ParseItemsIntoList(string items, List<string> target, bool filterItemNames)
         {

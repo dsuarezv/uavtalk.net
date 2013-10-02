@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Xml;
+using System.Collections.Generic;
 
 namespace UavObjectGenerator
 {
@@ -54,13 +55,22 @@ namespace UavObjectGenerator
                         case "field":
                             currentField = new FieldData();
                             currentField.Name = reader.GetAttribute("name");
-                            currentField.Type = reader.GetAttribute("type");
-                            currentField.Elements = reader.GetAttribute("elements");
-                            currentField.Units = reader.GetAttribute("units");
-                            currentField.ParseElementNamesFromAttribute(reader.GetAttribute("elementnames"));
-                            currentField.ParseOptionsFromAttribute(reader.GetAttribute("options"));
-                            currentField.ParseDefaultValuesFromAttribute(reader.GetAttribute("defaultvalue"));
-                            currentObject.Fields.Add(currentField);
+                            currentObject.FieldsIndex.Add(currentField.Name, currentField);
+
+                            if (IsClone(reader))
+                            {
+                                currentField.CloneFrom(currentObject.FieldsIndex[reader.GetAttribute("cloneof")]);
+                            }
+                            else
+                            {
+                                currentField.Type = reader.GetAttribute("type");
+                                currentField.Elements = reader.GetAttribute("elements");
+                                currentField.Units = reader.GetAttribute("units");
+                                currentField.ParseElementNamesFromAttribute(reader.GetAttribute("elementnames"));
+                                currentField.ParseOptionsFromAttribute(reader.GetAttribute("options"));
+                                currentField.ParseDefaultValuesFromAttribute(reader.GetAttribute("defaultvalue"));
+                                currentObject.Fields.Add(currentField);
+                            }
                             break;
                         case "option": 
                             currentField.Options.Add(FieldData.GetFilteredItemName(reader.ReadString()));
@@ -75,8 +85,13 @@ namespace UavObjectGenerator
             return currentObject;
         }
 
+        private static bool IsClone(XmlReader reader)
+        {
+            string cloneOf = reader.GetAttribute("cloneof");
 
-
+            return (cloneOf != null && cloneOf != "");
+        }
+        
         private string mSourceFileName;
     }
 }

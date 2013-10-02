@@ -5,16 +5,10 @@ namespace UavObjectGenerator
 {
     public class ObjectData
     {
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public List<FieldData> Fields { get; set; }
-
-        public ObjectData()
-        {
-            Fields = new List<FieldData>();
-        }
-
-
+        public string Name;
+        public string Description;
+        public List<FieldData> Fields = new List<FieldData>();
+        public Dictionary<string, FieldData> FieldsIndex = new Dictionary<string, FieldData>();
     }
 }
 

@@ -22,17 +22,17 @@ namespace UavObjectGenerator
 
         public void ParseElementNamesFromAttribute(string elementNamesAttribute)
         {
-            ParseItemsIntoList(elementNamesAttribute, ElementNames);
+            ParseItemsIntoList(elementNamesAttribute, ElementNames, false);
         }
 
         public void ParseOptionsFromAttribute(string optionsAttribute)
         {
-            ParseItemsIntoList(optionsAttribute, Options);
+            ParseItemsIntoList(optionsAttribute, Options, true);
         }
 
         public void ParseDefaultValuesFromAttribute(string defaultValuesAttribute)
         {
-            ParseItemsIntoList(defaultValuesAttribute, DefaultValues);
+            ParseItemsIntoList(defaultValuesAttribute, DefaultValues, this.Type == "enum");
 
             if (DefaultValues.Count == 1 && ElementNames.Count > 1)
             {
@@ -45,7 +45,7 @@ namespace UavObjectGenerator
         }
 
 
-        private void ParseItemsIntoList(string items, List<string> target)
+        private void ParseItemsIntoList(string items, List<string> target, bool filterItemNames)
         {
             if (items == null || items == "")
                 return;
@@ -54,8 +54,31 @@ namespace UavObjectGenerator
 
             foreach (string s in ss)
             {
-                target.Add(s.Trim());
+                if (filterItemNames)
+                    target.Add(GetFilteredItemName(s));
+                else
+                    target.Add(s);
             }
+        }
+
+        public static string GetFilteredItemName(string s)
+        {
+            if (s == null || s == "") return "";
+
+            //string old = s;
+
+            if (s[0] >= '0' && s[0] <= '9') s = '_' + s;
+
+            s = s.Trim();
+            s = s.Replace(' ', '_');
+            s = s.Replace('+', '_');
+            s = s.Replace('.', '_');
+            s = s.Replace('(', '_');
+            s = s.Replace(')', '_');
+
+            //Console.WriteLine("D: initial: [{0}] processed: [{1}]", old, s);
+
+            return s;
         }
     }
 }

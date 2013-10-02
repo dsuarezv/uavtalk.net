@@ -180,7 +180,8 @@ namespace UavObjectGenerator
 
         private static string GetDefaultValue(ObjectData obj, FieldData f)
         {   
-            // = new UInt16[3]  // Roll, Pitch, Yaw
+            // "= new UInt16[3]  // Roll, Pitch, Yaw"
+
             int numElements = GetNumberOfElements(f);
 
             if (numElements <= 1)
@@ -211,18 +212,18 @@ namespace UavObjectGenerator
             {
                 List<string> expandedDefaults = new List<string>();
 
-                string enumName = f.Type == "enum" ? GetEnumName(obj, f) : "";
+                string enumName = f.Type == "enum" ? GetEnumName(obj, f) + '.' : "";
 
-                // Create a list epanding the same value to the given number of items
+                // Create a list expanding the same value to the given number of items
                 for (int i = 0; i < GetNumberOfElements(f); ++i)
                 {
-                    expandedDefaults.Add(string.Format("{0}.{1}", enumName, f.DefaultValues[0]));
+                    expandedDefaults.Add(string.Format("{0}{1}", enumName, f.DefaultValues[0]));
                 }
 
                 return GetCommaSeparatedValues(expandedDefaults, GetFieldTypeSuffix(f));
             }
 
-            return "DEFAULT_VALUES_DONT_MATCH_ELEMENT_NAMES";
+            return "";
         }
 
         private static string GetFieldTypeSuffix(FieldData f)
@@ -311,6 +312,7 @@ namespace UavObjectGenerator
                 case "int8":   return "ReadByte";
                 case "uint8":  return "ReadByte";
                 case "int16":  return "ReadInt16";
+                case "uint16": return "ReadUInt16";
                 case "int32":  return "ReadInt32";
                 case "uint32": return "ReadUInt32";
                 case "enum":   return "ReadByte";

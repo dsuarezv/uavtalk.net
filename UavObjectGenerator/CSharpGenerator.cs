@@ -187,7 +187,7 @@ namespace UavObjectGenerator
             if (numElements <= 1)
             {
                 if (f.DefaultValues.Count == 1) 
-                    return string.Format(" = {0}", f.DefaultValues[0]);
+                    return string.Format(" = {0}", f.DefaultValues[0] + GetFieldTypeSuffix(f));
             }
             else
             {

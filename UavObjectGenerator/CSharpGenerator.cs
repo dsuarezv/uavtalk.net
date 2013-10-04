@@ -101,7 +101,7 @@ namespace UavObjectGenerator
 
         private static void WriteSerialize(TextWriter w, ObjectData obj)
         {
-            WL(w, "        public override void Serialize(BinaryWriter s)");
+            WL(w, "        protected override void SerializeBody(BinaryWriter s)");
             WL(w, "        {");
 
             foreach (FieldData f in obj.Fields)
@@ -129,7 +129,7 @@ namespace UavObjectGenerator
 
         private static void WriteDeserialize(TextWriter w, ObjectData obj)
         {
-            WL(w, "        public override void Deserialize(BinaryReader stream, UavDataObject target)", obj.Name);
+            WL(w, "        protected override void DeserializeBody(BinaryReader stream, UavDataObject target)", obj.Name);
             WL(w, "        {");
             WL(w, "            {0} t = target as {0};", obj.Name);
 

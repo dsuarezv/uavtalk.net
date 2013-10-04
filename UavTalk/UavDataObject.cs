@@ -25,9 +25,9 @@ namespace UavTalk
 
         }
 
-        public virtual UavDataObject Deserialize(BinaryReader stream)
+        public virtual void Deserialize(BinaryReader stream, UavDataObject target)
         {
-            return null;
+            
         }
 
         public virtual void Serialize(BinaryWriter stream)

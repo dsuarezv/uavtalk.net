@@ -46,6 +46,9 @@ namespace UavObjectGenerator
         }
 
 
+        // __ Code generators _____________________________________________
+
+
         private static void WriteHeader(TextWriter w, ObjectData obj)
         {
             WL(w, "using System;");
@@ -126,9 +129,9 @@ namespace UavObjectGenerator
 
         private static void WriteDeserialize(TextWriter w, ObjectData obj)
         {
-            WL(w,"        public override UavDataObject Deserialize(BinaryReader stream)");
-            WL(w,"        {");
-            WL(w, "            {0} result = new {0}();", obj.Name);
+            WL(w, "        public override void Deserialize(BinaryReader stream, UavDataObject target)", obj.Name);
+            WL(w, "        {");
+            WL(w, "            {0} t = target as {0};", obj.Name);
 
             foreach (FieldData f in obj.Fields)
             {
@@ -136,20 +139,19 @@ namespace UavObjectGenerator
 
                 if (numElements <= 1)
                 {
-                    WL(w, "            result.{0} = {1}stream.{2}();", 
+                    WL(w, "            t.{0} = {1}stream.{2}();", 
                        GetPrivateFieldName(f), GetEnumTypeCast(obj, f), GetReadOperation(f));
                 }
                 else
                 {
                     for (int i = 0; i < numElements; ++i)
                     {
-                        WL(w, "            result.{0}[{1}] = {2}stream.{3}();  // {4}", 
+                        WL(w, "            t.{0}[{1}] = {2}stream.{3}();  // {4}", 
                            GetPrivateFieldName(f), i, GetEnumTypeCast(obj, f), GetReadOperation(f), GetElementNameAt(f, i));
                     }
                 }
             }
 
-            WL(w, "            return result;");
             WL(w, "        }\n");
             WL(w);
         }
@@ -169,6 +171,10 @@ namespace UavObjectGenerator
             WL(w, "    }");
             WL(w, "}");
         }
+
+
+        // __ Helpers _____________________________________________________________
+
 
         private static string GetElementNameAt(FieldData f, int index)
         {

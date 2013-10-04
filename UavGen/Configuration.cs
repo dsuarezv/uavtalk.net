@@ -19,12 +19,7 @@ namespace UavGen
         {
             get
             {
-                string result;
-
-                if (mOptions.TryGetValue("output", out result))
-                    return result;
-
-                return "";
+                return GetOption("output");
             }
         }
 
@@ -44,9 +39,19 @@ namespace UavGen
             }
         }
 
-        public string GetUsage()
+        private string GetUsage()
         {
             return "Usage: UavGen [--output=<output directory>]  <list of xml definition files>";
+        }
+
+        public string GetOption(string opt)
+        {
+            string result;
+
+            if (mOptions.TryGetValue(opt, out result))
+                return result;
+
+            return "";
         }
 
         private void Parse(string[] args)
@@ -83,6 +88,8 @@ namespace UavGen
 
             mOptions.Add(parts[0].Trim().ToLower(), parts[1].Trim());
         }
+
+
 
 
         private List<string> mFiles = new List<string>();

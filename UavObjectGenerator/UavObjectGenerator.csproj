@@ -38,6 +38,7 @@
     <Compile Include="CSharpGenerator.cs" />
     <Compile Include="FieldData.cs" />
     <Compile Include="ObjectData.cs" />
+    <Compile Include="Hasher.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

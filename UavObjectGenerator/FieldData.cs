@@ -3,16 +3,43 @@ using System.Collections.Generic;
 
 namespace UavObjectGenerator
 {
+    public enum FieldDataType{
+        INT8 = 0,
+        INT16,
+        INT32,
+        UINT8,
+        UINT16,
+        UINT32,
+        FLOAT32,
+        ENUM
+    };
+
     public class FieldData
     {   
         // Anything added here should be added as well in the CloneFrom method
         public string Name { get; set; }
-        public string Type { get; set; }
+        public string TypeString { get; set; }
         public string Units { get; set; }
         public string Elements { get; set; }
         public List<string> ElementNames { get; set; } 
         public List<string> Options { get; set; }
         public List<string> DefaultValues { get; set; }
+        public FieldDataType Type { get; set; }
+
+        public int NumElements
+        {
+            get
+            {
+                if (ElementNames.Count > 0) return ElementNames.Count;
+
+                if (Elements == null || Elements == "") return 0;
+
+                int result; 
+                if (Int32.TryParse(Elements, out result)) return result;
+
+                return 0;
+            }
+        }
 
         public FieldData()
         {
@@ -33,7 +60,7 @@ namespace UavObjectGenerator
 
         public void ParseDefaultValuesFromAttribute(string defaultValuesAttribute)
         {
-            ParseItemsIntoList(defaultValuesAttribute, DefaultValues, this.Type == "enum");
+            ParseItemsIntoList(defaultValuesAttribute, DefaultValues, this.TypeString == "enum");
 
             if (DefaultValues.Count == 1 && ElementNames.Count > 1)
             {
@@ -47,7 +74,7 @@ namespace UavObjectGenerator
 
         public void CloneFrom(FieldData f)
         {
-            this.Type = f.Type;
+            this.TypeString = f.TypeString;
             this.Units = f.Units;
             this.Elements = f.Elements;
             this.ElementNames = f.ElementNames;

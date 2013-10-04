@@ -48,6 +48,8 @@ namespace UavObjectGenerator
                         case "object":
                             currentObject = new ObjectData();    
                             currentObject.Name = reader.GetAttribute("name");
+                            currentObject.IsSettings = GetIntFromBool(reader.GetAttribute("settings"));
+                            currentObject.IsSingleInst = GetIntFromBool(reader.GetAttribute("singleinstance"));
                             break;
                         case "description": 
                             currentObject.Description = reader.ReadString();                            
@@ -55,22 +57,23 @@ namespace UavObjectGenerator
                         case "field":
                             currentField = new FieldData();
                             currentField.Name = reader.GetAttribute("name");
-                            currentObject.FieldsIndex.Add(currentField.Name, currentField);
+                            currentObject.FieldsIndexedByName.Add(currentField.Name, currentField);
 
                             if (IsClone(reader))
                             {
-                                currentField.CloneFrom(currentObject.FieldsIndex[reader.GetAttribute("cloneof")]);
+                                currentField.CloneFrom(currentObject.FieldsIndexedByName[reader.GetAttribute("cloneof")]);
                             }
                             else
                             {
-                                currentField.Type = reader.GetAttribute("type");
+                                currentField.TypeString = reader.GetAttribute("type");
+                                currentField.Type = GetFieldTypeFromString(currentField.TypeString);
                                 currentField.Elements = reader.GetAttribute("elements");
                                 currentField.Units = reader.GetAttribute("units");
                                 currentField.ParseElementNamesFromAttribute(reader.GetAttribute("elementnames"));
                                 currentField.ParseOptionsFromAttribute(reader.GetAttribute("options"));
                                 currentField.ParseDefaultValuesFromAttribute(reader.GetAttribute("defaultvalue"));
-                                currentObject.Fields.Add(currentField);
                             }
+                            currentObject.Fields.Add(currentField);
                             break;
                         case "option": 
                             currentField.Options.Add(FieldData.GetFilteredItemName(reader.ReadString()));
@@ -83,6 +86,31 @@ namespace UavObjectGenerator
             }
 
             return currentObject;
+        }
+
+        private static int GetIntFromBool(string boolString)
+        {
+            if (boolString == "true") return 1;
+            if (boolString == "false") return 0;
+
+            return -1;
+        }
+
+        private static FieldDataType GetFieldTypeFromString(string t)
+        {
+            // Needed for hash calculation;
+            switch (t)
+            {
+                case "float": return FieldDataType.FLOAT32;
+                case "int8": return FieldDataType.INT8;
+                case "uint8": return FieldDataType.UINT8;
+                case "int16": return FieldDataType.INT16;
+                case "uint16": return FieldDataType.UINT16;
+                case "enum": return FieldDataType.ENUM;
+                case "int32": return FieldDataType.INT32;
+                case "uint32": return FieldDataType.UINT32;
+                default: return FieldDataType.INT32;
+            }
         }
 
         private static bool IsClone(XmlReader reader)

@@ -85,7 +85,7 @@ namespace UavObjectGenerator
         {
             foreach (FieldData f in obj.Fields)
             {
-                if (f.Type != "enum") continue;
+                if (f.TypeString != "enum") continue;
 
                 WL(w, "    public enum {0} {{ {1} }};", GetEnumName(obj, f), GetEnumItems(f));
                 WL(w);
@@ -95,7 +95,11 @@ namespace UavObjectGenerator
 
         private static void WriteConstructor(TextWriter w, ObjectData obj)
         {
-
+            WL(w, "        public {0}()", obj.Name);
+            WL(w, "        {");
+            WL(w, "            ObjectId = 0x{0:x8};", Hasher.CalculateId(obj));
+            WL(w, "        }");
+            WL(w);
         }
 
 
@@ -106,7 +110,7 @@ namespace UavObjectGenerator
 
             foreach (FieldData f in obj.Fields)
             {
-                int numElements = GetNumberOfElements(f);
+                int numElements = f.NumElements;
 
                 if (numElements <= 1)
                 {
@@ -135,7 +139,7 @@ namespace UavObjectGenerator
 
             foreach (FieldData f in obj.Fields)
             {
-                int numElements = GetNumberOfElements(f);
+                int numElements = f.NumElements;
 
                 if (numElements <= 1)
                 {
@@ -188,13 +192,13 @@ namespace UavObjectGenerator
         {   
             // "= new UInt16[3]  // Roll, Pitch, Yaw"
 
-            int numElements = GetNumberOfElements(f);
+            int numElements = f.NumElements;
 
             if (numElements <= 1)
             {
                 if (f.DefaultValues.Count == 1)
                 {
-                    if (f.Type == "enum")
+                    if (f.TypeString == "enum")
                     {
                         return string.Format(" = {0}.{1}", GetEnumName(obj, f), f.DefaultValues[0]);
                     }
@@ -224,7 +228,7 @@ namespace UavObjectGenerator
 
             if (f.DefaultValues.Count == f.ElementNames.Count)
             {
-                if (f.Type == "enum")
+                if (f.TypeString == "enum")
                     return GetBracketedString(GetEnumCommaSeparatedValues(GetEnumName(obj, f), f.DefaultValues));
                 else
                     return GetBracketedString(GetCommaSeparatedValues(f.DefaultValues, GetFieldTypeSuffix(f)));
@@ -234,11 +238,11 @@ namespace UavObjectGenerator
             {
                 List<string> expandedDefaults = new List<string>();
 
-                string enumName = f.Type == "enum" ? GetEnumName(obj, f) + '.' : "";
+                string enumName = f.TypeString == "enum" ? GetEnumName(obj, f) + '.' : "";
                 string valueToExpand = f.DefaultValues[0];
-                int numElements = GetNumberOfElements(f);
+                int numElements = f.NumElements;
 
-                if (f.Type == "uint8" && numElements == valueToExpand.Length)
+                if (f.TypeString == "uint8" && numElements == valueToExpand.Length)
                 {
                     // Special case: array of uint8 as chars
                     for (int i = 0; i < numElements; ++i)
@@ -263,7 +267,7 @@ namespace UavObjectGenerator
 
         private static string GetFieldTypeSuffix(FieldData f)
         {
-            switch (f.Type)
+            switch (f.TypeString)
             {
                 case "float":
                     return "f";
@@ -284,21 +288,9 @@ namespace UavObjectGenerator
             return GetCommaSeparatedValues(result, "");
         }
 
-        private static int GetNumberOfElements(FieldData f)
-        {
-            if (f.ElementNames.Count > 0) return f.ElementNames.Count;
-
-            if (f.Elements == null || f.Elements == "") return 0;
-
-            int result; 
-            if (Int32.TryParse(f.Elements, out result)) return result;
-
-            return 0;
-        }
-
         private static string GetArrayModifier(FieldData f, bool withNumberOfElements)
         {
-            int numElements = GetNumberOfElements(f);
+            int numElements = f.NumElements;
 
             if (numElements <= 1) return "";
 
@@ -307,7 +299,7 @@ namespace UavObjectGenerator
 
         private static string GetCSharpType(ObjectData obj, FieldData f)
         {
-            switch (f.Type)
+            switch (f.TypeString)
             {
                 case "float": return "float";
                 case "int8": return "SByte";
@@ -318,14 +310,14 @@ namespace UavObjectGenerator
                 case "int32": return "Int32";
                 case "uint32": return "UInt32";
                 default: 
-                    Console.WriteLine("ERROR: Unknown uavType: " + f.Type);
+                    Console.WriteLine("ERROR: Unknown uavType: " + f.TypeString);
                     return "!!!!";
             }
         }
 
         private static string GetSerializeTypeCast(ObjectData obj, FieldData f)
         {
-            if (f.Type != "enum")
+            if (f.TypeString != "enum")
                 return "";
 
             return "(byte)";
@@ -333,7 +325,7 @@ namespace UavObjectGenerator
 
         private static string GetEnumTypeCast(ObjectData obj, FieldData f)
         {
-            if (f.Type != "enum")
+            if (f.TypeString != "enum")
                 return "";
 
             return String.Format("({0})", GetEnumName(obj, f));
@@ -341,7 +333,7 @@ namespace UavObjectGenerator
 
         private static string GetReadOperation(FieldData f)
         {
-            switch (f.Type)
+            switch (f.TypeString)
             {
                 case "float":  return "ReadSingle";
                 case "int8":   return "ReadSByte";
@@ -352,7 +344,7 @@ namespace UavObjectGenerator
                 case "uint32": return "ReadUInt32";
                 case "enum":   return "ReadByte";
                 default:
-                    Console.WriteLine("ERROR: Unknown uavType: " + f.Type);
+                    Console.WriteLine("ERROR: Unknown uavType: " + f.TypeString);
                     return "UNKNOWN_UAV_TYPE";
             }
         }
@@ -364,7 +356,7 @@ namespace UavObjectGenerator
 
         private static string GetEnumItems(FieldData f)
         {
-            if (f.Type != "enum") return "";
+            if (f.TypeString != "enum") return "";
 
             return GetCommaSeparatedValues(f.Options, "");
         }

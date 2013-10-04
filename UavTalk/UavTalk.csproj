@@ -135,6 +135,7 @@
     <Compile Include="UavObjects\waypoint.cs" />
     <Compile Include="UavObjects\waypointactive.cs" />
     <Compile Include="UavObjects\windvelocityactual.cs" />
+    <Compile Include="UavTalkParser.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

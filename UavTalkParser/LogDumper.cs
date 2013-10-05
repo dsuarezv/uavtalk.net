@@ -24,6 +24,10 @@ namespace UavTalkParser
                     UavDataObject obj = w.GetNextObject(mInput);
                     Console.WriteLine(obj);
                 }
+                catch (EndOfStreamException)
+                {
+                    break;
+                }
                 catch (Exception ex)
                 {
                     Console.Error.WriteLine(ex.Message);

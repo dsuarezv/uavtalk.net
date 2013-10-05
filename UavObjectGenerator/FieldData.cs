@@ -112,6 +112,7 @@ namespace UavObjectGenerator
             s = s.Replace('.', '_');
             s = s.Replace('(', '_');
             s = s.Replace(')', '_');
+            s = s.Replace('-', '_');
 
             //Console.WriteLine("D: initial: [{0}] processed: [{1}]", old, s);
 

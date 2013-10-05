@@ -1,69 +1,48 @@
 <xml>
-	<object name="SystemAlarms" singleinstance="true" settings="false">
-		<description>Alarms from OpenPilot to indicate failure conditions or warnings.  Set by various modules.</description>
-		<field name="Alarm" units="" type="enum" options="Uninitialised,OK,Warning,Error,Critical" defaultvalue="Uninitialised">
-			<elementnames>
-				<elementname>OutOfMemory</elementname>
-				<elementname>CPUOverload</elementname>
-				<elementname>StackOverflow</elementname>
-				<elementname>SystemConfiguration</elementname>
-				<elementname>EventSystem</elementname>
-				<elementname>Telemetry</elementname>
-				<elementname>ManualControl</elementname>
-				<elementname>Actuator</elementname>
-				<elementname>Attitude</elementname>
-				<elementname>Sensors</elementname>
-				<elementname>Stabilization</elementname>
-				<elementname>PathFollower</elementname>
-				<elementname>PathPlanner</elementname>
-				<elementname>Battery</elementname>
-				<elementname>FlightTime</elementname>
-				<elementname>I2C</elementname>
-				<elementname>GPS</elementname>
-			  <elementname>BootFault</elementname>
-			</elementnames>
-		</field>
-		<field name="ConfigError" units="" type="enum" elements="1" defaultvalue="None">
-			<options>
-				<option>Stabilization</option>
-				<option>Multirotor</option>
-				<option>AutoTune</option>
-				<option>AltitudeHold</option>
-				<option>VelocityControl</option>
-				<option>PositionHold</option>
-				<option>PathPlanner</option>
-				<option>Undefined</option>
-				<option>None</option>
-			</options>
-		</field>
-		<field name="ManualControl" units="" type="enum" elements="1" defaultvalue="None">
-			<options>
-				<option>Settings</option>
-				<option>NoRx</option>
-				<option>Accessory</option>
-				<option>AltitudeHold</option>
-				<option>PathFollower</option>
-				<option>Undefined</option>
-				<option>None</option>
-			</options>
-		</field>
-		<field name="StateEstimation" units="" type="enum" elements="1" defaultvalue="None">
-			<options>
-				<option>Gyro queue not updating</option>
-				<option>Accelerometer queue not updating</option>
-				<option>No GPS</option>
-				<option>No magnetometer</option>
-				<option>No barometer</option>
-				<option>Too few satellites</option>
-				<option>PDOP too high</option>
-				<option>Undefined</option>
-				<option>None</option>
-			</options>
-		</field>
-
-		<access gcs="readwrite" flight="readwrite"/>
-		<telemetrygcs acked="true" updatemode="onchange" period="0"/>
-		<telemetryflight acked="true" updatemode="onchange" period="0"/>
-		<logging updatemode="periodic" period="1000"/>
-	</object>
+    <object name="SystemAlarms" singleinstance="true" settings="false">
+        <description>Alarms from OpenPilot to indicate failure conditions or warnings.  Set by various modules.  Some modules may have a module defined Status and Substatus fields that details its condition.</description>
+        <field name="Alarm" units="" type="enum" options="Uninitialised,OK,Warning,Error,Critical" defaultvalue="Uninitialised">
+		<elementnames>
+			<elementname>SystemConfiguration</elementname>
+			<elementname>BootFault</elementname>
+			<elementname>OutOfMemory</elementname>
+			<elementname>StackOverflow</elementname>
+			<elementname>CPUOverload</elementname>
+			<elementname>EventSystem</elementname>
+			<elementname>Telemetry</elementname>
+			<elementname>ManualControl</elementname>
+			<elementname>Actuator</elementname>
+			<elementname>Attitude</elementname>
+			<elementname>Sensors</elementname>
+			<elementname>Stabilization</elementname>
+			<elementname>Guidance</elementname>
+			<elementname>Battery</elementname>
+			<elementname>FlightTime</elementname>
+			<elementname>I2C</elementname>
+			<elementname>GPS</elementname>
+			<elementname>Power</elementname>
+		</elementnames>
+	</field>
+	<field name="ExtendedAlarmStatus" units="" type="enum" defaultvalue="None">
+		<elementnames>
+			<elementname>SystemConfiguration</elementname>
+			<elementname>BootFault</elementname>
+		</elementnames>
+		<options>
+			<option>None</option>
+			<option>RebootRequired</option>
+			<option>FlightMode</option>
+		</options>
+	</field>
+	<field name="ExtendedAlarmSubStatus" units="" type="uint8" defaultvalue="0">
+		<elementnames>
+			<elementname>SystemConfiguration</elementname>
+			<elementname>BootFault</elementname>
+		</elementnames>
+	</field>
+        <access gcs="readwrite" flight="readwrite"/>
+        <telemetrygcs acked="true" updatemode="onchange" period="0"/>
+        <telemetryflight acked="true" updatemode="onchange" period="0"/>
+        <logging updatemode="periodic" period="1000"/>
+    </object>
 </xml>

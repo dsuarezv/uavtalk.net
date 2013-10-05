@@ -5,10 +5,10 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{D1FFE2DA-2577-4EE2-A44E-9DD100ED673E}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>UavObjectGenerator</RootNamespace>
-    <AssemblyName>UavObjectGenerator</AssemblyName>
+    <ProjectGuid>{77C50756-C34F-48AB-BB5F-FBE0983716F1}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>UavTalkParser</RootNamespace>
+    <AssemblyName>UavTalkParser</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -18,7 +18,8 @@
     <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
+    <Externalconsole>true</Externalconsole>
+    <Commandlineparameters>dumplog ../../../samples/OP-2013-10-04_17-17-28.opl</Commandlineparameters>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -26,20 +27,20 @@
     <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
+    <Externalconsole>true</Externalconsole>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="XmlParser.cs" />
-    <Compile Include="CSharpGenerator.cs" />
-    <Compile Include="FieldData.cs" />
-    <Compile Include="ObjectData.cs" />
-    <Compile Include="Hasher.cs" />
-    <Compile Include="SummaryGenerator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\UavTalk\UavTalk.csproj">
+      <Project>{DD1D009B-86CD-4F6D-BC53-47CD707F3659}</Project>
+      <Name>UavTalk</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>

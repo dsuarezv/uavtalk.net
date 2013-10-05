@@ -85,6 +85,10 @@ namespace UavObjectGenerator
                 }
             }
 
+            SummaryGenerator.RegisterObjectId(
+                Hasher.CalculateId(currentObject), 
+                string.Format("{0}.{1}", CSharpGenerator.Namespace, currentObject.Name));
+
             return currentObject;
         }
 

@@ -23,7 +23,6 @@ namespace UavObjectGenerator
             WriteConstructor(w, obj);
             WriteSerialize(w, obj);
             WriteDeserialize(w, obj);
-            WriteStaticConstructor(w, obj);
             WritePrivateFields(w, obj);
             WriteFooter(w, obj);
         }
@@ -32,13 +31,12 @@ namespace UavObjectGenerator
         // __ Impl _______________________________________________________
 
 
-        private static void WL(TextWriter w)
+        internal static void WL(TextWriter w)
         {
             w.WriteLine();
         }
 
-
-        private static void WL(TextWriter w, string s, params object[] args)
+        internal static void WL(TextWriter w, string s, params object[] args)
         {
             if (args.Length == 0)
                 w.WriteLine(s);
@@ -106,7 +104,7 @@ namespace UavObjectGenerator
 
         private static void WriteSerialize(TextWriter w, ObjectData obj)
         {
-            WL(w, "        protected override void SerializeBody(BinaryWriter s)");
+            WL(w, "        internal override void SerializeBody(BinaryWriter s)");
             WL(w, "        {");
 
             foreach (FieldData f in obj.Fields)
@@ -134,9 +132,8 @@ namespace UavObjectGenerator
 
         private static void WriteDeserialize(TextWriter w, ObjectData obj)
         {
-            WL(w, "        protected override void DeserializeBody(BinaryReader stream, UavDataObject target)", obj.Name);
+            WL(w, "        internal override void DeserializeBody(BinaryReader stream)", obj.Name);
             WL(w, "        {");
-            WL(w, "            {0} t = target as {0};", obj.Name);
 
             foreach (FieldData f in obj.Fields)
             {
@@ -144,29 +141,20 @@ namespace UavObjectGenerator
 
                 if (numElements <= 1)
                 {
-                    WL(w, "            t.{0} = {1}stream.{2}();", 
+                    WL(w, "            this.{0} = {1}stream.{2}();", 
                        GetPrivateFieldName(f), GetEnumTypeCast(obj, f), GetReadOperation(f));
                 }
                 else
                 {
                     for (int i = 0; i < numElements; ++i)
                     {
-                        WL(w, "            t.{0}[{1}] = {2}stream.{3}();  // {4}", 
+                        WL(w, "            this.{0}[{1}] = {2}stream.{3}();  // {4}", 
                            GetPrivateFieldName(f), i, GetEnumTypeCast(obj, f), GetReadOperation(f), GetElementNameAt(f, i));
                     }
                 }
             }
 
             WL(w, "        }\n");
-            WL(w);
-        }
-
-        private static void WriteStaticConstructor(TextWriter w, ObjectData obj)
-        {
-            WL(w, "        static {0}()", obj.Name);
-            WL(w, "        {");
-            WL(w, "            RegisterObjectType(0x{0:x8}, typeof({1}));", Hasher.CalculateId(obj), obj.Name);
-            WL(w, "        }");
             WL(w);
         }
 

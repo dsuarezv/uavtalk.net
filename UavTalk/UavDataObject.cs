@@ -16,19 +16,16 @@ namespace UavTalk
         {
             Type t; 
 
-            if (!mObjectIds.TryGetValue(id, out t))
+            if (!GetObjectIds().TryGetValue(id, out t))
                 throw new Exception(string.Format("Object Id 0x{0:x8} not found", id));
 
             ConstructorInfo ci = t.GetConstructor(new Type[] { });
             return ci.Invoke(new object[] {}) as UavDataObject;
         }
 
-
-        protected static UInt32 RegisterObjectType(UInt32 id, Type type)
+        public static Dictionary<UInt32, Type> GetObjectIds()
         {
-            mObjectIds[id] = type;
-
-            return id;
+            return ObjectSummary.GetObjectIds();
         }
 
         protected void NotifyUpdated()
@@ -36,17 +33,16 @@ namespace UavTalk
 
         }
 
-        protected virtual void DeserializeBody(BinaryReader stream, UavDataObject target)
+        internal virtual void DeserializeBody(BinaryReader stream)
         {
 
         }
 
-        protected virtual void SerializeBody(BinaryWriter stream)
+        internal virtual void SerializeBody(BinaryWriter stream)
         {
 
         }
 
-        private static Dictionary<UInt32, Type> mObjectIds = new Dictionary<uint, Type>();
     }
 }
 

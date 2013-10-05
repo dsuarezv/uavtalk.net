@@ -29,6 +29,8 @@ namespace UavGen
                     }
                 }
 
+                SummaryGenerator.Write(c.OutputDir);
+
                 return 0;
             }
             catch (Exception ex)

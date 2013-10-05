@@ -7,9 +7,9 @@ namespace UavTalk
 
 
 
-    public class UavTalkParser
+    public class UavTalkWalker
     {
-        public UavTalkParser()
+        public UavTalkWalker()
         {
 
         }
@@ -54,13 +54,14 @@ namespace UavTalk
         {
             // Identifies the type of object and creates the proper object for further processing
 
-            Int16 lenght = stream.ReadInt16();
+            Int16 length = stream.ReadInt16();
             UInt32 objId = stream.ReadUInt32();
             UavDataObject result = ObjectSummary.CreateObject(objId);
+
             if (result == null)
             {
                 // DAVE: add better handling: read lenght field and skip this packet, instead of stopping with an exceptio
-                throw new Exception(string.Format("Unexpected ID: 0x{0:x8}", objId));
+                throw new Exception(string.Format("Unexpected ID: 0x{0:x8} at {1}", objId, stream.BaseStream.Position));
             }
 
             result.InstanceId = (result.IsSingleInstance) ? (UInt16)0 : stream.ReadUInt16();

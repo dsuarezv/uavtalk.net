@@ -1,7 +1,7 @@
 using System;
+using System.IO;
 using System.Collections.Generic;
 using UavTalk;
-
 
 namespace UavTalkParser
 {
@@ -17,21 +17,28 @@ namespace UavTalkParser
 
             ObjectSummary.RegisterObjects();
 
-            switch (args[0])
+            try
             {
-                case "printids":
-                    PrintIds();
-                    return;
-                case "dumplog": 
-                    if (args.Length == 2)
-                    {
-                        DumpLog(args[1]);
+                switch (args[0])
+                {
+                    case "printids":
+                        PrintIds();
                         return;
-                    }
-                    break;       
+                    case "dumplog": 
+                        if (args.Length == 2)
+                        {
+                            DumpLog(args[1]);
+                            return;
+                        }
+                        break;       
+                }
+                 
+                PrintUsage();
             }
-             
-            PrintUsage();
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine("ERROR: {0}", ex.Message);
+            }
         }
 
         private static void PrintUsage()
@@ -60,7 +67,13 @@ namespace UavTalkParser
 
         private static void DumpLog(string filename)
         {
-
+            using (FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read))
+            {
+                using (BinaryReader reader = new BinaryReader(fs))
+                {
+                    new LogDumper(reader).Process();
+                }
+            }
         }
     }
 }

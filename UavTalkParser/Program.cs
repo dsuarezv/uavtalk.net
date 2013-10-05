@@ -15,6 +15,8 @@ namespace UavTalkParser
                 return;
             }
 
+            ObjectSummary.RegisterObjects();
+
             switch (args[0])
             {
                 case "printids":
@@ -52,7 +54,7 @@ namespace UavTalkParser
         {
             foreach (KeyValuePair<UInt32, Type> entry in UavDataObject.GetObjectIds())
             {
-                P("{0:x8} -> {1}", entry.Key, entry.Value);
+                P("0x{0:x8} -> {1}", entry.Key, entry.Value);
             }
         }
 

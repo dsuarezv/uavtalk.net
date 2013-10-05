@@ -96,6 +96,7 @@ namespace UavObjectGenerator
         {
             WL(w, "        public {0}()", obj.Name);
             WL(w, "        {");
+            WL(w, "            IsSingleInstance = {0};", (obj.IsSingleInstInt == 1) ? "true" : "false");
             WL(w, "            ObjectId = 0x{0:x8};", Hasher.CalculateId(obj));
             WL(w, "        }");
             WL(w);

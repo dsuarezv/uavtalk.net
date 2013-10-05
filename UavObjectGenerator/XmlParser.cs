@@ -48,8 +48,8 @@ namespace UavObjectGenerator
                         case "object":
                             currentObject = new ObjectData();    
                             currentObject.Name = reader.GetAttribute("name");
-                            currentObject.IsSettings = GetIntFromBool(reader.GetAttribute("settings"));
-                            currentObject.IsSingleInst = GetIntFromBool(reader.GetAttribute("singleinstance"));
+                            currentObject.IsSettingsInt = GetIntFromBoolString(reader.GetAttribute("settings"));
+                            currentObject.IsSingleInstInt = GetIntFromBoolString(reader.GetAttribute("singleinstance"));
                             break;
                         case "description": 
                             currentObject.Description = reader.ReadString();                            
@@ -92,7 +92,14 @@ namespace UavObjectGenerator
             return currentObject;
         }
 
-        private static int GetIntFromBool(string boolString)
+        private static bool GetBoolFromString(string boolString)
+        {
+            if (boolString == "true") return true;
+
+            return false;
+        }
+
+        private static int GetIntFromBoolString(string boolString)
         {
             if (boolString == "true") return 1;
             if (boolString == "false") return 0;

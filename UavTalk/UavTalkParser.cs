@@ -56,13 +56,16 @@ namespace UavTalk
 
             Int16 lenght = stream.ReadInt16();
             UInt32 objId = stream.ReadUInt32();
-            UavDataObject result = UavDataObject.CreateObject(objId);
+            UavDataObject result = ObjectSummary.CreateObject(objId);
+            if (result == null)
+            {
+                // DAVE: add better handling: read lenght field and skip this packet, instead of stopping with an exceptio
+                throw new Exception(string.Format("Unexpected ID: 0x{0:x8}", objId));
+            }
 
+            result.InstanceId = (result.IsSingleInstance) ? (UInt16)0 : stream.ReadUInt16();
 
-
-            UInt16 instanceId = stream.ReadUInt16();
-
-            return null;
+            return result;
         }
 
         protected void DeserializeBody(BinaryReader stream, UavDataObject target)

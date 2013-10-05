@@ -10,11 +10,9 @@ namespace UavTalk
             return mObjectIds;
         }
 
-        private static UInt32 RegisterObjectType(UInt32 id, Type type)
+        private static void RegisterObjectType(UInt32 id, Type type)
         {
             mObjectIds[id] = type;
-
-            return id;
         }
 
         private static Dictionary<UInt32, Type> mObjectIds = new Dictionary<uint, Type>();

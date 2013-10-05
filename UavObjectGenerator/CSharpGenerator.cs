@@ -23,6 +23,7 @@ namespace UavObjectGenerator
             WriteConstructor(w, obj);
             WriteSerialize(w, obj);
             WriteDeserialize(w, obj);
+            WriteStaticConstructor(w, obj);
             WritePrivateFields(w, obj);
             WriteFooter(w, obj);
         }
@@ -157,6 +158,15 @@ namespace UavObjectGenerator
             }
 
             WL(w, "        }\n");
+            WL(w);
+        }
+
+        private static void WriteStaticConstructor(TextWriter w, ObjectData obj)
+        {
+            WL(w, "        static {0}()", obj.Name);
+            WL(w, "        {");
+            WL(w, "            RegisterObjectType(0x{0:x8}, typeof({1}));", Hasher.CalculateId(obj), obj.Name);
+            WL(w, "        }");
             WL(w);
         }
 

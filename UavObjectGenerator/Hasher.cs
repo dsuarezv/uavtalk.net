@@ -30,13 +30,13 @@ namespace UavObjectGenerator
         //    info->id = hash & 0xFFFFFFFE;
         //}
 
-        public static UInt32 CalculateId(ObjectData info)
+        public static UInt32 CalculateId(ObjectData obj)
         {
-            UInt32 hash = UpdateHash(info.Name, 0);
-            hash = UpdateHash((UInt32)info.IsSettings, hash);
-            hash = UpdateHash((UInt32)info.IsSingleInst, hash);
+            UInt32 hash = UpdateHash(obj.Name, 0);
+            hash = UpdateHash((UInt32)obj.IsSettings, hash);
+            hash = UpdateHash((UInt32)obj.IsSingleInst, hash);
 
-            foreach (FieldData f in info.Fields)
+            foreach (FieldData f in obj.Fields)
             {
                 hash = UpdateHash(f.Name, hash);
                 hash = UpdateHash((UInt32)f.NumElements, hash);

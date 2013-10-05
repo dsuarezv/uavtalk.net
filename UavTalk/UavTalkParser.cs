@@ -16,7 +16,7 @@ namespace UavTalk
 
         private void SyncStream()
         {
-
+            // Search for a 0x3C + messagetype header
         }
 
         private UavDataObject DeserializeHeader(BinaryReader stream)

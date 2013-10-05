@@ -10,21 +10,10 @@ namespace UavGen
     {
         public static int Main(string[] args)
         {
-            //XmlParser p = new XmlParser("/Users/dave/develop/Taulabs-dyquo/xmls/accels.xml");
-            //XmlParser p = new XmlParser("/Users/dave/develop/Taulabs-dyquo/xmls/brushlessgimbalsettings.xml");
-            //p.Generate("/Users/dave/develop/Taulabs-dyquo/output/accels.cs");
-
-            //XmlParser.Generate(new XmlTextReader("/Users/dave/develop/Taulabs-dyquo/xmls/adcrouting.xml"), Console.Out);
-            //XmlParser.Generate(new XmlTextReader("/Users/dave/develop/Taulabs-dyquo/xmls/accels.xml"), Console.Out);
-            //XmlParser.Generate(new XmlTextReader("/Users/dave/develop/Taulabs-dyquo/xmls/fixedwingpathfollowersettingscc.xml"), Console.Out);
-
             try
             {
-
                 Configuration c = new Configuration(args);
-
                 c.CheckValid();
-               
 
                 foreach (string s in c.Files)
                 {
@@ -33,7 +22,6 @@ namespace UavGen
                         string fileName = Path.GetFileNameWithoutExtension(s);
                         string outputFileName = Path.Combine(c.OutputDir, fileName + ".cs");
                         new XmlParser(s).Generate(outputFileName);
-                        //XmlParser.Generate(new XmlTextReader(s), Console.Out);
                     }
                     catch (Exception ex)
                     {

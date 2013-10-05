@@ -66,14 +66,14 @@ namespace UavObjectGenerator
 
         private static void WriteGetTypeForId(TextWriter w)
         {
-            WL(w, "        public static Type GetTypeForId(UInt32 id)");
+            WL(w, "        public static UavDataObject CreateObject(UInt32 id)");
             WL(w, "        {");
             WL(w, "              switch (id)");
             WL(w, "              {");
         
             foreach (KeyValuePair<UInt32, String> entry in mObjectIds)
             {
-                WL(w, "                case 0x{0:x8}: return typeof({1});", entry.Key, entry.Value);
+                WL(w, "                case 0x{0:x8}: return new {1}();", entry.Key, entry.Value);
             }
 
             WL(w, "            }");

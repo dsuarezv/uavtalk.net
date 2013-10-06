@@ -42,7 +42,7 @@ namespace UavObjectGenerator
                 hash = UpdateHash((UInt32)f.NumElements, hash);
                 hash = UpdateHash((UInt32)f.Type, hash);
 
-                if (f.TypeString == "enum")
+                if (f.Type == FieldDataType.ENUM)
                 {
                     foreach (string op in f.Options)
                     {
@@ -68,7 +68,11 @@ namespace UavObjectGenerator
 
         private static UInt32 UpdateHash(UInt32 val, UInt32 hash)
         {
-            return (hash ^ ((hash << 5) + (hash >> 2) + val));
+            UInt32 result = (hash ^ ((hash << 5) + (hash >> 2) + val));
+
+            // Console.WriteLine("updHash: {0:x8}", result);
+
+            return result;
         }
 
         //
@@ -95,6 +99,8 @@ namespace UavObjectGenerator
             {
                 hashout = UpdateHash(bytes[n], hashout);
             }
+
+            // Console.WriteLine("updHashStr: {0} -> {1:x8}", val, hashout);
 
             return hashout;
         }

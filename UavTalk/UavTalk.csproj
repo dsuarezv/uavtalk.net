@@ -130,4 +130,10 @@
   <ItemGroup>
     <Folder Include="UavObjects\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\UavGen\UavGen.csproj">
+      <Project>{D865FF9A-5D23-4E9D-818C-AAA7DCD54955}</Project>
+      <Name>UavGen</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>

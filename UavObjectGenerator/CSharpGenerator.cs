@@ -23,6 +23,7 @@ namespace UavObjectGenerator
             WriteConstructor(w, obj);
             WriteSerialize(w, obj);
             WriteDeserialize(w, obj);
+            WriteToString(w, obj);
             WritePrivateFields(w, obj);
             WriteFooter(w, obj);
         }
@@ -156,6 +157,25 @@ namespace UavObjectGenerator
             }
 
             WL(w, "        }\n");
+            WL(w);
+        }
+
+        private static void WriteToString(TextWriter w, ObjectData obj)
+        {
+            WL(w, "        public override string ToString()");
+            WL(w, "        {");
+            WL(w, "            System.Text.StringBuilder sb = new System.Text.StringBuilder();");
+            WL(w);
+            WL(w, "            sb.Append(\"{0} = \");", obj.Name);
+
+            foreach (FieldData f in obj.Fields)
+            {
+                WL(w, "            sb.AppendFormat(\"[{0}:{{0}}] \", {0});", f.Name);
+            }
+
+            WL(w);
+            WL(w, "            return sb.ToString();");
+            WL(w, "        }");
             WL(w);
         }
 

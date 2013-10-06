@@ -22,7 +22,7 @@ namespace UavTalkParser
                 try
                 {
                     UavDataObject obj = w.GetNextObject(mInput);
-                    Console.WriteLine(obj);
+                    Console.WriteLine(obj.ToString());
                 }
                 catch (EndOfStreamException)
                 {

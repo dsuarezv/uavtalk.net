@@ -42,7 +42,7 @@ namespace UavObjectGenerator
                 hash = UpdateHash((UInt32)f.NumElements, hash);
                 hash = UpdateHash((UInt32)f.Type, hash);
 
-                if (f.Type == FieldDataType.ENUM)
+                if (f.IsEnum)
                 {
                     foreach (string op in f.Options)
                     {

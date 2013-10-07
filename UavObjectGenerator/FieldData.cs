@@ -41,6 +41,11 @@ namespace UavObjectGenerator
             }
         }
 
+        public bool IsEnum
+        {
+            get { return this.Type == FieldDataType.ENUM; }
+        }
+
         public FieldData()
         {
             ElementNames = new List<string>();
@@ -50,22 +55,22 @@ namespace UavObjectGenerator
 
         public void ParseElementNamesFromAttribute(string elementNamesAttribute)
         {
-            ParseItemsIntoList(elementNamesAttribute, ElementNames, false);
+            ParseItemsIntoList(elementNamesAttribute, ElementNames);
         }
 
         public void ParseOptionsFromAttribute(string optionsAttribute)
         {
-            ParseItemsIntoList(optionsAttribute, Options, true);
+            ParseItemsIntoList(optionsAttribute, Options);
         }
 
         public void ParseDefaultValuesFromAttribute(string defaultValuesAttribute)
         {
-            ParseItemsIntoList(defaultValuesAttribute, DefaultValues, this.TypeString == "enum");
+            ParseItemsIntoList(defaultValuesAttribute, DefaultValues);
 
-            if (DefaultValues.Count == 1 && ElementNames.Count > 1)
+            if (DefaultValues.Count == 1 && NumElements > 1)
             {
                 //Only one default value given: apply it to all the elements
-                for (int i = 1; i < ElementNames.Count; ++i)
+                for (int i = 1; i < NumElements; ++i)
                 {
                     DefaultValues.Add(DefaultValues[0]);
                 }
@@ -74,6 +79,7 @@ namespace UavObjectGenerator
 
         public void CloneFrom(FieldData f)
         {
+            this.Type = f.Type;
             this.TypeString = f.TypeString;
             this.Units = f.Units;
             this.Elements = f.Elements;
@@ -82,7 +88,7 @@ namespace UavObjectGenerator
             this.DefaultValues = f.DefaultValues;
         }
 
-        private void ParseItemsIntoList(string items, List<string> target, bool filterItemNames)
+        private void ParseItemsIntoList(string items, List<string> target)
         {
             if (items == null || items == "")
                 return;
@@ -91,14 +97,11 @@ namespace UavObjectGenerator
 
             foreach (string s in ss)
             {
-                if (filterItemNames)
-                    target.Add(GetFilteredItemName(s));
-                else
-                    target.Add(s);
+                target.Add(s);
             }
         }
 
-        public static string GetFilteredItemName(string s)
+        public static string GetEscapedItemName(string s)
         {
             if (s == null || s == "") return "";
 

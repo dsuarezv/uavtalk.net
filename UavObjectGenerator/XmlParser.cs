@@ -76,7 +76,7 @@ namespace UavObjectGenerator
                             currentObject.Fields.Add(currentField);
                             break;
                         case "option": 
-                            currentField.Options.Add(FieldData.GetFilteredItemName(reader.ReadString()));
+                            currentField.Options.Add(reader.ReadString());
                             break;
                         case "elementname": 
                             currentField.ElementNames.Add(reader.ReadString());

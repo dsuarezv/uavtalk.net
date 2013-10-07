@@ -170,7 +170,18 @@ namespace UavObjectGenerator
 
             foreach (FieldData f in obj.Fields)
             {
-                WL(w, "            sb.AppendFormat(\"[{0}:{{0}}] \", {0});", f.Name);
+                if (f.NumElements == 1)
+                {
+                    WL(w, "            sb.AppendFormat(\"[{0}:{{0}}] \", {0});", f.Name);
+                }
+                else
+                {
+                    for (int i = 0; i < f.NumElements; ++i)
+                    {
+                        string elemName = (f.ElementNames.Count == f.NumElements) ? f.ElementNames[i] : "";
+                        WL(w, "            sb.AppendFormat(\"[{0}.{1}:{{0}}] \", {0}[{2}]);", f.Name, elemName, i);
+                    }
+                }
             }
 
             WL(w);

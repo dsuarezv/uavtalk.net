@@ -54,7 +54,7 @@ namespace UavTalk
         {
             // Identifies the type of object and creates the proper object for further processing
 
-            Int16 length = stream.ReadInt16();
+            stream.ReadInt16(); // length
             UInt32 objId = stream.ReadUInt32();
             UavDataObject result = ObjectSummary.CreateObject(objId);
 

@@ -85,6 +85,7 @@ namespace UavObjectGenerator
                 }
             }
 
+            ExpandDefaultValues(currentObject);
             SortFields(currentObject);
 
             SummaryGenerator.RegisterObjectId(
@@ -92,6 +93,14 @@ namespace UavObjectGenerator
                 string.Format("{0}.{1}", CSharpGenerator.Namespace, currentObject.Name));
 
             return currentObject;
+        }
+
+        private static void ExpandDefaultValues(ObjectData obj)
+        {
+            foreach (FieldData f in obj.Fields)
+            {
+                f.ExpandDefaultValue();
+            }
         }
 
         private static bool GetBoolFromString(string boolString)

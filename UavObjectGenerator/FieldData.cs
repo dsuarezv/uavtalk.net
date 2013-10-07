@@ -66,7 +66,10 @@ namespace UavObjectGenerator
         public void ParseDefaultValuesFromAttribute(string defaultValuesAttribute)
         {
             ParseItemsIntoList(defaultValuesAttribute, DefaultValues);
+        }
 
+        public void ExpandDefaultValue()
+        {
             if (DefaultValues.Count == 1 && NumElements > 1)
             {
                 //Only one default value given: apply it to all the elements
@@ -75,6 +78,7 @@ namespace UavObjectGenerator
                     DefaultValues.Add(DefaultValues[0]);
                 }
             }
+
         }
 
         public void CloneFrom(FieldData f)

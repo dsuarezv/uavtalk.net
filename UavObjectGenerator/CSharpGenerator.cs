@@ -166,20 +166,21 @@ namespace UavObjectGenerator
             WL(w, "        {");
             WL(w, "            System.Text.StringBuilder sb = new System.Text.StringBuilder();");
             WL(w);
-            WL(w, "            sb.Append(\"{0} = \");", obj.Name);
+            WL(w, "            sb.Append(\"{0} \\n\");", obj.Name);
 
             foreach (FieldData f in obj.Fields)
             {
                 if (f.NumElements == 1)
                 {
-                    WL(w, "            sb.AppendFormat(\"[{0}:{{0}}] \", {0});", f.Name);
+                    WL(w, "            sb.AppendFormat(\"    {0}: {{0}} {1}\\n\", {0});", f.Name, f.Units);
                 }
                 else
                 {
+                    WL(w, "            sb.Append(\"    {0}\\n\");", f.Name);
                     for (int i = 0; i < f.NumElements; ++i)
                     {
                         string elemName = (f.ElementNames.Count == f.NumElements) ? f.ElementNames[i] : "";
-                        WL(w, "            sb.AppendFormat(\"[{0}.{1}:{{0}}] \", {0}[{2}]);", f.Name, elemName, i);
+                        WL(w, "            sb.AppendFormat(\"        {1}: {{0}} {3}\\n\", {0}[{2}]);", f.Name, elemName, i, f.Units);
                     }
                 }
             }

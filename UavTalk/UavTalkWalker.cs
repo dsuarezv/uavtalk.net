@@ -16,16 +16,24 @@ namespace UavTalk
 
         public UavDataObject GetNextObject(BinaryReader stream)
         {
-            while ( SyncStream(stream) != UavTalk_MessageType.OBJ)
+            while (true)
             {
-                // Skip ACKs and other stuff for now. Only objects with data.
+                UavTalk_MessageType mt = SyncStream(stream);
+
+                switch (mt)
+                {
+                    case UavTalk_MessageType.OBJ:
+                        UavDataObject result = DeserializeHeader(stream);
+                        DeserializeBody(stream, result);
+                        return result;
+                    case UavTalk_MessageType.OBJ_REQ:
+                    case UavTalk_MessageType.ACK:
+                    case UavTalk_MessageType.NACK:
+                    case UavTalk_MessageType.OBJ_ACK:
+                        Console.WriteLine("Walker: " + mt.ToString());
+                        break;
+                }
             }
-
-            UavDataObject result = DeserializeHeader(stream);
-
-            DeserializeBody(stream, result);
-
-            return result;
         }
 
         private UavTalk_MessageType SyncStream(BinaryReader stream)
@@ -60,7 +68,7 @@ namespace UavTalk
 
             if (result == null)
             {
-                // DAVE: add better handling: read lenght field and skip this packet, instead of stopping with an exceptio
+                // DAVE: add better handling: read length field and skip this packet, instead of stopping with an exception
                 throw new Exception(string.Format("Unexpected ID: 0x{0:x8} at {1}", objId, stream.BaseStream.Position));
             }
 

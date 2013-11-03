@@ -30,7 +30,17 @@ namespace UavTalkParser
                             DumpLog(args[1]);
                             return;
                         }
-                        break;       
+                        break;
+                    case "listcomports":
+                        ListComPorts();
+                        return;
+                    case "readtelemetry":
+                        if (args.Length == 2)
+                        {
+                            ReadTelemetry(args[1]);
+                            return;
+                        }
+                        break;
                 }
                  
                 PrintUsage();
@@ -49,6 +59,10 @@ namespace UavTalkParser
             P("        Prints registered object ids and associated type.");
             P("    dumplog <logfile>");
             P("        Parses given logfile and prints info on found objects.");
+            P("    listcomports");
+            P("        Lists the available COM ports on this computer");
+            P("    readtelemetry <comport>");
+            P("        Connects with an openpilot board on the given COM port and prints telemetry.");
             P("");
         }
 
@@ -74,6 +88,26 @@ namespace UavTalkParser
                     new LogDumper(reader).Process();
                 }
             }
+        }
+
+        private static void ListComPorts()
+        {
+            foreach (string s in SerialTelemetryParser.GetComPorts())
+            {
+                P(s);
+            }
+        }
+
+        private static void ReadTelemetry(string comPort)
+        {
+            SerialTelemetryParser p = new SerialTelemetryParser(comPort);
+            p.OnTelemetryMessage += OnSerialTelemetryMessage;
+            p.Loop();
+        }
+
+        static void OnSerialTelemetryMessage(UavDataObject obj)
+        {
+            Console.WriteLine(obj.ToString());
         }
     }
 }

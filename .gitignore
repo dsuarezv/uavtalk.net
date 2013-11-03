@@ -3,3 +3,5 @@ bin/
 obj/
 UavTalk/UavObjects/
 .DS_Store
+*.user
+samples/

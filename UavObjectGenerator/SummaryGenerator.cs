@@ -4,14 +4,6 @@ using System.Collections.Generic;
 
 namespace UavObjectGenerator
 {
-    /* Pendiente: 
-     * - Hay que añadir singleinstance a cada objeto, para el parseo del campo instanceid
-     * - Hay que cambiar el sistema de registro de object ids. Con esta clase se registran
-     *     los tipos en un nuevo fichero (ObjectSummary.cs)
-     * - Hay que acabar el programa de ejemplo.
-     *
-     */
-
     public class SummaryGenerator
     {
         public static void RegisterObjectId(UInt32 id, string className)

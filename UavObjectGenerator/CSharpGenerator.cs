@@ -282,36 +282,6 @@ namespace UavObjectGenerator
                     return GetBracketedString(GetCommaSeparatedValues(f.DefaultValues, GetFieldTypeSuffix(f)));
             }
 
-            // Case 2: there is only one default value that is applied to all items. 
-            //   Expand the given value to a list and apply to all items.
-
-            /*
-            if (f.DefaultValues.Count == 1)
-            {
-                List<string> expandedDefaults = new List<string>();
-                string valueToExpand = GetFormattedDefaultValue(obj, f, 0);
-
-                if (f.Type == FieldDataType.UINT8 && f.NumElements == valueToExpand.Length)
-                {
-                    // Special case: array of uint8 as chars
-                    for (int i = 0; i < f.NumElements; ++i)
-                    {
-                        expandedDefaults.Add(string.Format("0x{0:x2}", (int)valueToExpand[i]));
-                    }
-                }
-                else
-                {
-                    // Create a list expanding the same value to the given number of items
-                    for (int i = 0; i < f.NumElements; ++i)
-                    {
-                        expandedDefaults.Add(string.Format("{0}{1}", GetEnumName(obj, f, true), valueToExpand));
-                    }
-                }
-
-                return GetBracketedString(GetCommaSeparatedValues(expandedDefaults, ""));
-            }
-            */
-
             return "";
         }
 

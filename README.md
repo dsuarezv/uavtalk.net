@@ -21,3 +21,11 @@ This library contains the generated classes and some support code to ease UavObj
 ## UavTalkParser
 
 This is a sample command line utility that uses the UavTalk library. It can take a logfile from the OpenPilot ground control station software and dump it on screen with details of every packet. Make sure to generate the UavObject classes for the same version of the GCS software that you are using. 
+
+# Building
+
+Just open the .sln file in the root in VS2012 or Xamarin Studio and hit build. Sorry, no Makefile or CLI compilation scripts for the moment. 
+
+# License
+
+This code is licensed under the MIT licence <http://opensource.org/licenses/MIT>.
